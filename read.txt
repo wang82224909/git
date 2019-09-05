@@ -1,2 +1,37 @@
-git is good
-git is bad
+import requests # 导入requests库
+from selenium import webdriver  #导入selenium库
+import time # 导入time库
+def main():
+    n = 14
+    while n < 48:   # 使用while循环登录不同网址
+        url_main = "http://www.baobao88.com/youshen/en/03/261273%s.html"%n  # 使用占位符%s % 构造网址
+        # print(url_main)
+        driver = webdriver.Chrome() # 调用谷歌浏览器
+        driver.get(url_main)    # 登录网址
+        driver.page_source  # 获取网址内容
+        # print(html_text)
+        # b = driver.find_elements_by_id('playicon')
+        # for all_src1 in b:
+        #     src1 = all_src1.get_attribute("src")
+        #     print(src1)
+        c = driver.find_elements_by_xpath("//*[@id='jp_audio_0']")  # 网页检查元素得到元素xpath属性，使用find函数查找属性，包含音频下载地址
+        d = driver.find_elements_by_xpath("//*[@id='cright']/span/img") # 网页检查元素得的xpath属性，使用find函数查找属性，包含音频名称
+        for all_name in d:  # 遍历d列表
+            name = all_name.get_attribute("alt")    # 获取alt属性的值
+            print(name)
+        for all_src in c:   # 遍历c列表
+            src = all_src.get_attribute("src")  # 获取src属性的值，即音频下载地址
+            # print(src)
+            with open("%s.mp3"%name, "ab") as f:    # 使用占位符定义音频名称
+                r = requests.get(src)   # 用requests库获取音频地址
+                f.write(r.content)  # 将音频文件写入文件夹
+                print("下载成功")
+        n+=1    # 网址更新
+        print(n)
+        driver.quit()   # 关闭浏览器
+        time.sleep(5)   # 程序暂停5秒，反反爬
+    else:
+        print("下载完成")
+if __name__ == '__main__':
+    main()
+
